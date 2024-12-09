@@ -2,7 +2,7 @@ sum1 = 0
 sum2 = 0
 
 files = ["example.txt", "input.txt"]
-file = files[0]
+file = files[1]
 
 disk = []
 
@@ -29,27 +29,37 @@ input.each_with_index do |val,i|
     if i%2 == 0
         # file id ctr starts at j and has val.to_i length
         files[ctr] = [j, val.to_i]
-        val.to_i.times {disk << ctr.to_s}
+        val.to_i.times do |k|
+            disk << ctr.to_s
+            #puts (j+k).to_s + " 0 space"
+            free_spaces[j+k] = 0
+        end
         count_nrs += val.to_i
     else
-        # beginning at j, there is a free space of length val.to_i
         free_spaces[j] = val.to_i
+        #puts free_spaces.inspect
         val.to_i.times {disk << "."}
+        ((val.to_i)-1).times do |k|
+            #puts (j+1+k).to_s + " 0 space"
+            free_spaces[j+1+k] = 0
+        end
         ctr+=1
     end
 end
 
-def find_first_dot(d)
-    d.each_with_index do |val,i|
+disk2 = Marshal.load(Marshal.dump(disk))
+
+def find_first_dot(d, ok_up_to)
+    d[ok_up_to..-1].each_with_index do |val,i|
         if val =="."
-            return i
+            return ok_up_to+i
         end
     end
 end
 
-def check_if_done(d, cnt)
+def check_if_done(d, cnt, ok=0)
     count = 0
-    d.each do |val|
+    d[ok..-1].each do |val|
         if val == "."
             break
         else
@@ -57,18 +67,14 @@ def check_if_done(d, cnt)
         end
     end
 
-    if count == cnt
-        return true
-    else
-        return false
-    end
+    return ok+count
 end
 
 def checksum(d)
     sum = 0
     d.each_with_index do |val,i|
         if val == "."
-            break
+            next
         else
             sum += val.to_i*i
         end
@@ -76,24 +82,68 @@ def checksum(d)
     sum
 end
 
+#puts check_if_done(disk, count_nrs)
+
+ok_up_to = 0
+=begin
 disk.reverse.each_with_index do |val,i|
     if val!="."
-        j = find_first_dot(disk)
+        j = find_first_dot(disk, ok_up_to)
         k = disk.length-1-i
         #puts "swapping "+k.to_s+" and "+j.to_s
         disk[k], disk[j] = disk[j], disk[k]
         #puts disk.join("")
     end
     # very inefficient, but it does the deed
-    if check_if_done(disk,count_nrs)
+    ok_up_to = check_if_done(disk, count_nrs, ok_up_to)
+    #puts ok_up_to
+    if ok_up_to == count_nrs
         break
     end
 end
+=end
 
-puts files.inspect
-puts free_spaces.inspect
+
+#puts checksum(disk)
+
+# part 2
+
+#puts files.inspect
+
+disk = disk2
+
+puts disk.join(' ')
+
+files.reverse.each_with_index do |f,i|
+    fid = files.length-1-i
+
+    foundkey = 0
+    freespacelength = 0
+    filelength = 0
+    success = false
+    free_spaces.each do |key,length|
+        if length >= f[1] && key < f[0]
+            #puts "file "+fid.to_s+" would fit into space nr. "+key.to_s
+            # some swapping action
+            f[1].times do |j|
+                #puts "swapping "+(f[0]+j).to_s+" and "+(key+j).to_s
+                disk[f[0]+j], disk[key+j] = disk[key+j], disk[f[0]+j]
+            end
+            #puts disk.join(' ')
+            # update free spaces - only those to the left need to be updated
+            foundkey = key
+            freespacelength = length
+            filelength = f[1]
+            # that should be it
+            success = true
+            break
+        end 
+    end
+    if success
+        free_spaces[foundkey]=0
+        free_spaces[foundkey+filelength] = freespacelength-filelength
+    end
+    #puts free_spaces.inspect
+end
 
 puts checksum(disk)
-
-puts sum1
-puts sum1+sum2
