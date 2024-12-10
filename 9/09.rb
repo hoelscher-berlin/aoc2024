@@ -85,7 +85,7 @@ end
 #puts check_if_done(disk, count_nrs)
 
 ok_up_to = 0
-=begin
+
 disk.reverse.each_with_index do |val,i|
     if val!="."
         j = find_first_dot(disk, ok_up_to)
@@ -101,10 +101,10 @@ disk.reverse.each_with_index do |val,i|
         break
     end
 end
-=end
 
 
-#puts checksum(disk)
+
+puts checksum(disk)
 
 # part 2
 
@@ -112,7 +112,7 @@ end
 
 disk = disk2
 
-puts disk.join(' ')
+#puts disk.join(' ')
 
 files.reverse.each_with_index do |f,i|
     fid = files.length-1-i
