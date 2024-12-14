@@ -40,8 +40,7 @@ robots.each do |r|
     end
 end
 
-20000.times do |v|
-    puts v
+100.times do |v|
     # tick
     robots.each do |r|
         ry = r[0][1]
@@ -54,10 +53,6 @@ end
 
         map[ry][rx] -= 1
         map[r[0][1]][r[0][0]] += 1
-    end
-    if (v-189)%103 == 0
-        puts v
-        prettyprint(map)
     end
 end
 
@@ -85,7 +80,38 @@ map.each_with_index do |row,y|
     end
 end
 
-prettyprint(map)
-
 sum1 = q1*q2*q3*q4
 puts sum1
+
+10000.times do |v|
+    one = true
+    # tick
+    robots.each do |r|
+        ry = r[0][1]
+        rx = r[0][0]
+        vely = r[1][1]
+        velx = r[1][0]
+
+        r[0][1] = (ry + vely)%ylen
+        r[0][0] = (rx + velx)%xlen
+
+        map[ry][rx] -= 1
+        map[r[0][1]][r[0][0]] += 1
+    end
+    map.each_with_index do |l,y|
+        l.each_with_index do |val,x|
+            if !(val == 1 || val == 0)
+                one = false
+                break
+            end
+        end
+        if one == false
+            break
+        end
+    end
+
+    if one
+        puts v+1
+        prettyprint(map)
+    end
+end
