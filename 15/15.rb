@@ -289,6 +289,9 @@ moves.each do |m|
             end
         end
     end
+    puts "\e[H\e[2J"
+    prettyprint(map)
+    sleep(0.01)
 end
 
 prettyprint(map)
