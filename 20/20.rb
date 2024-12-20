@@ -1,4 +1,5 @@
 require 'set'
+require 'benchmark'
 file = "input.txt"
 
 sum1 = 0
@@ -46,7 +47,7 @@ def inbound(x,y,xlen,ylen)
     return x >= 0 && x < xlen && y >= 0 && y < ylen
 end 
 
-$possible_cheats = []
+$possible_cheats = Set.new
 
 def scan(map,x,y,xlen,ylen,find_walls)
     reachable = []
@@ -56,9 +57,7 @@ def scan(map,x,y,xlen,ylen,find_walls)
                 reachable << [y+dir[0],x+dir[1]]
             end
             if find_walls && map[y+dir[0]][x+dir[1]] == "#"
-                if !$possible_cheats.include?([y+dir[0],x+dir[1],y,x])
-                    $possible_cheats << [y+dir[0],x+dir[1],y,x]
-                end
+                $possible_cheats.add [y+dir[0],x+dir[1],y,x]
             end
         end
     end
