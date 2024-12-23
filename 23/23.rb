@@ -1,6 +1,7 @@
 require 'set'
 require 'benchmark'
 require 'rgl/adjacency'
+require 'rgl/dot'
 file = "input.txt"
 
 sum1 = 0
@@ -43,6 +44,37 @@ sum1 = good_triples.length
 
 puts sum1
 
+k=3
+cliques = triples
+cliques = cliques.sort
+
+while true
+    next_cliques = Set.new
+
+    groups = cliques.group_by { |subarray| subarray[0..-2] }
+
+    groups.each do |common_prefix, subarrays|
+        next if subarrays.size < 2
+      
+        subarrays.combination(2) do |pair|
+            if graph.has_edge?(pair[0][-1],pair[1][-1])
+                next_cliques.add(pair[0] + [pair[1][-1]])
+            end
+        end
+    end
+
+    if next_cliques.length == 0
+        break
+    end
+
+    cliques = next_cliques.sort
+    k += 1
+end
+
+puts cliques[0].sort.join(",")
+
+=begin
+
 def bron_kerbosch(graph, r, p, x, cliques)
     if p.empty? && x.empty?
         cliques << r
@@ -75,3 +107,6 @@ max_cliques = find_cliques(graph)
 max = max_cliques.max_by(&:length)
 
 puts max.sort.join(",")
+
+#graph.write_to_graphic_file('jpg', 'graph_'+file)
+=end
