@@ -51,7 +51,9 @@ expected = x+y
 # look at it and fix it :)
 #graph.write_to_graphic_file('jpg')
 
-#=begin
+
+# the following section is for debugging and testing
+=begin
 max_45_bit_value = (1 << 45) - 1  # 2^45 - 1
 # Generate two random 45-bit numbers
 xold = Random.rand(0..max_45_bit_value)
@@ -77,7 +79,7 @@ y = yold.to_s(2).split("").reverse
         wires["y"+nr] = 0
     end
 end
-#=end
+=end
 
 def calc(w1,w2,op)
     case op
